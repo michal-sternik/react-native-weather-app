@@ -1,0 +1,13 @@
+const MAPBOX_ACCESS_TOKEN = "pk.eyJ1IjoibWFyY2gzd2EiLCJhIjoiY2x1bDQxMDI3MGh6dzJqbHcxaWJid2xiciJ9.cYIWZ-iXYn80Tfnpt9TYLQ"
+const CITYAPI_API_KEY = "a24421a783d1435a9a4ae2e1f2522d76";
+
+const MAPBOX_MAP_STYLE = 'mapbox://styles/mapbox/dark-v11';
+const OPENWEATHER_API_KEY = "0031d758ba088e9167c5079fc6515b39";
+
+export {
+
+    MAPBOX_ACCESS_TOKEN,
+    MAPBOX_MAP_STYLE,
+    OPENWEATHER_API_KEY,
+    CITYAPI_API_KEY
+};
