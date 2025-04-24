@@ -1,4 +1,3 @@
-// Zamieniona wersja CitiesPanel.tsx na React Native
 import React, { useEffect, useState } from "react";
 import {
   View,
@@ -15,7 +14,7 @@ import AddCity from "../AddCity/AddCity";
 import { CityListItemProps } from "../../../../types/cityTypes";
 import { MAX_ITEMS_PER_PAGE } from "../../../../constants";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import { RadioButton } from 'react-native-paper';
+import { RadioButton } from "react-native-paper";
 
 interface SortType {
   type: "temperature" | "windSpeed" | "clouds";
@@ -29,7 +28,6 @@ function CitiesPanel({ isMapVisible }: { isMapVisible: boolean }) {
   const [page, setPage] = useState<number>(1);
   const [pagesCount, setPagesCount] = useState<number>(1);
 
-
   const renderPaginatedCities = () => {
     if (!citiesList) return [];
     const sortedList = sortedCitiesList();
@@ -37,7 +35,6 @@ function CitiesPanel({ isMapVisible }: { isMapVisible: boolean }) {
     const sliceTo = page * MAX_ITEMS_PER_PAGE;
     return sortedList.slice(sliceFrom, sliceTo);
   };
-
 
   useEffect(() => {
     if (citiesList) {
@@ -56,17 +53,31 @@ function CitiesPanel({ isMapVisible }: { isMapVisible: boolean }) {
   };
 
   return (
-    <View style={[styles.container, Platform.OS !== 'web' && isMapVisible && styles.hidden]}>
+    <View
+      style={[
+        styles.container,
+        Platform.OS !== "web" && isMapVisible && styles.hidden,
+      ]}
+    >
       <AddCity />
 
       <Text style={styles.sortText}>Sort by and pick filter option:</Text>
       <View style={styles.sortAndFilterContainer}>
         <View style={styles.sortContainer}>
-          {Object.entries({ "temperature": "Temperature", "windSpeed": "Wind Speed", "clouds": "Clouds" } as const).map(([type, label]) => (
+          {Object.entries({
+            temperature: "Temperature",
+            windSpeed: "Wind Speed",
+            clouds: "Clouds",
+          } as const).map(([type, label]) => (
             <TouchableOpacity
               key={type}
               style={styles.chip}
-              onPress={() => setSortBy({ type, ascending: sortBy?.type === type ? !sortBy.ascending : false })}
+              onPress={() =>
+                setSortBy({
+                  type: type as "temperature" | "windSpeed" | "clouds",
+                  ascending: sortBy?.type === type ? !sortBy.ascending : false,
+                })
+              }
             >
               <Text style={styles.chipText}>{label}</Text>
               {sortBy?.type === type && (
@@ -80,18 +91,19 @@ function CitiesPanel({ isMapVisible }: { isMapVisible: boolean }) {
           ))}
         </View>
 
-
         <RadioButton.Group
           onValueChange={(newValue) => setFilterOption(newValue)}
           value={filterOption}
         >
-          <View style={styles.radioItem}>
-            <RadioButton value="pagination" />
-            <Text style={styles.radioText}>Pagination</Text>
-          </View>
-          <View style={styles.radioItem}>
-            <RadioButton value="full-list" />
-            <Text style={styles.radioText}>Full List</Text>
+          <View style={styles.filterContainer}>
+            <View style={styles.radioItem}>
+              <RadioButton value="pagination" />
+              <Text style={styles.radioText}>Pagination</Text>
+            </View>
+            <View style={styles.radioItem}>
+              <RadioButton value="full-list" />
+              <Text style={styles.radioText}>Full List</Text>
+            </View>
           </View>
         </RadioButton.Group>
       </View>
@@ -99,31 +111,35 @@ function CitiesPanel({ isMapVisible }: { isMapVisible: boolean }) {
       <ScrollView style={styles.listContainer}>
         {!citiesList ? (
           <ActivityIndicator size="large" color="#FFFFFF" />
-        ) : filterOption === 'pagination' ? (
-          renderPaginatedCities().map((city) => <CityListItem key={city.id} {...city} />)
+        ) : filterOption === "pagination" ? (
+          renderPaginatedCities().map((city) => (
+            <CityListItem key={city.id} {...city} />
+          ))
         ) : (
-          sortedCitiesList().map((city) => <CityListItem key={city.id} {...city} />)
+          sortedCitiesList().map((city) => (
+            <CityListItem key={city.id} {...city} />
+          ))
         )}
       </ScrollView>
 
-      {/* Paginacja */}
-      {filterOption === 'pagination' && (
+      {filterOption === "pagination" && (
         <View style={styles.paginationContainer}>
-          {Array.from({ length: pagesCount }, (_, i) => i + 1).map((pageNumber) => (
-            <TouchableOpacity
-              key={pageNumber}
-              style={[
-                styles.pageButton,
-                page === pageNumber ? styles.pageButtonActive : null,
-              ]}
-              onPress={() => setPage(pageNumber)}
-            >
-              <Text style={styles.pageButtonText}>{pageNumber}</Text>
-            </TouchableOpacity>
-          ))}
+          {Array.from({ length: pagesCount }, (_, i) => i + 1).map(
+            (pageNumber) => (
+              <TouchableOpacity
+                key={pageNumber}
+                style={[
+                  styles.pageButton,
+                  page === pageNumber ? styles.pageButtonActive : null,
+                ]}
+                onPress={() => setPage(pageNumber)}
+              >
+                <Text style={styles.pageButtonText}>{pageNumber}</Text>
+              </TouchableOpacity>
+            )
+          )}
         </View>
       )}
-
     </View>
   );
 }
@@ -137,22 +153,25 @@ const styles = StyleSheet.create({
     display: "none",
   },
   sortAndFilterContainer: {
-    flexDirection: "row",
+    flexDirection: "column",
     justifyContent: "space-evenly",
     width: "100%",
     marginVertical: 10,
   },
-  sortContainer: {
-    // display: 'flex',
+  filterContainer: {
+    display: "flex",
     flexDirection: "row",
-    // height: '100%',
-    // justifyContent: "space-evenly",
-    alignItems: 'center',
-    gap: 5
-    // padding: 20,
-    // boxSizing: 'border-box'
-    // width: "100%",
-    // marginVertical: 10,
+    justifyContent: "center",
+    width: "100%",
+    marginVertical: 10,
+  },
+  sortContainer: {
+    display: "flex",
+    flexDirection: "row",
+
+    justifyContent: "space-evenly",
+    alignItems: "center",
+    gap: 5,
   },
   sortText: {
     fontSize: 16,
@@ -174,36 +193,36 @@ const styles = StyleSheet.create({
     width: "90%",
   },
   label: {
-    color: 'white',
+    color: "white",
     fontSize: 16,
   },
   radioItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginRight: 15,
   },
   radioText: {
-    color: 'white',
+    color: "white",
     fontSize: 16,
     marginLeft: 5,
   },
 
   paginationContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
     marginTop: 10,
   },
   pageButton: {
     padding: 10,
     margin: 5,
-    backgroundColor: '#555',
+    backgroundColor: "#555",
     borderRadius: 5,
   },
   pageButtonActive: {
-    backgroundColor: '#1976d2',
+    backgroundColor: "#1976d2",
   },
   pageButtonText: {
-    color: 'white',
+    color: "white",
   },
 });
 

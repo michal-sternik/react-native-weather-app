@@ -1,12 +1,28 @@
-// Zamieniona wersja CityListItem.tsx na React Native
 import React, { useRef, useState } from "react";
-import { View, Text, Image, TouchableOpacity, StyleSheet, Animated, Platform } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+  Animated,
+  Platform,
+  ScrollView,
+} from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import Feather from 'react-native-vector-icons/Feather';
+import Feather from "react-native-vector-icons/Feather";
 import { useCityContext } from "../../../../context";
 import { CityListItemProps } from "../../../../types/cityTypes";
 
-function CityListItem({ id, name, temperature, windSpeed, clouds, addedByUser, icon }: CityListItemProps) {
+function CityListItem({
+  id,
+  name,
+  temperature,
+  windSpeed,
+  clouds,
+  addedByUser,
+  icon,
+}: CityListItemProps) {
   const [clicked, setClicked] = useState(false);
   const { removeCityFromList } = useCityContext();
 
@@ -20,7 +36,7 @@ function CityListItem({ id, name, temperature, windSpeed, clouds, addedByUser, i
     }).start(() => cb());
   };
 
-  const fontSize = { fontSize: Platform.OS == 'web' ? 14 : 10 }
+  const fontSize = { fontSize: Platform.OS == "web" ? 14 : 10 };
 
   return (
     <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
@@ -36,31 +52,42 @@ function CityListItem({ id, name, temperature, windSpeed, clouds, addedByUser, i
             style={styles.weatherIcon}
           />
           <Text style={styles.cityTitle}>{name}</Text>
-          <View style={styles.infoContainer}>
-            <View style={styles.chip}>
-              <Ionicons name="thermometer-outline" size={16} color="white" />
-              <Text style={[styles.chipText, fontSize]}>{Math.floor(temperature - 273)}°C</Text>
+          <ScrollView
+            style={styles.scrollInfoContainer}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+          >
+            <View style={styles.infoContainer}>
+              <View style={styles.chip}>
+                <Ionicons name="thermometer-outline" size={16} color="white" />
+                <Text style={[styles.chipText, fontSize]}>
+                  {Math.floor(temperature - 273)}°C
+                </Text>
+              </View>
+              <View style={styles.chip}>
+                <Feather name="wind" size={16} color="white" />
+                <Text style={[styles.chipText, fontSize]}>{windSpeed} m/s</Text>
+              </View>
+              <View style={styles.chip}>
+                <Ionicons name="cloud-outline" size={16} color="white" />
+                <Text style={[styles.chipText, fontSize]}>{clouds} %</Text>
+              </View>
             </View>
-            <View style={styles.chip}>
-              <Feather name="wind" size={16} color="white" />
-              <Text style={[styles.chipText, fontSize]}>{windSpeed} m/s</Text>
-            </View>
-            <View style={styles.chip}>
-              <Ionicons name="cloud-outline" size={16} color="white" />
-              <Text style={[styles.chipText, fontSize]}>{clouds} %</Text>
-            </View>
-          </View>
-
+          </ScrollView>
         </View>
         <TouchableOpacity onPress={() => fadeOut(() => removeCityFromList(id))}>
           <Ionicons name="close" size={24} color="#DDDDDD" />
         </TouchableOpacity>
       </View>
-    </Animated.View >
+    </Animated.View>
   );
 }
 
 const styles = StyleSheet.create({
+  scrollInfoContainer: {
+    maxWidth: 500,
+    marginLeft: 10,
+  },
   container: {
     width: "100%",
     paddingVertical: 12,
@@ -74,7 +101,7 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
+    justifyContent: "flex-start",
     flex: 1,
   },
   weatherIcon: {
